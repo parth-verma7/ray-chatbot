@@ -1,0 +1,11 @@
+{
+  "name": "ray-chatbot",
+  "version": "1.0.0",
+  "description": "Ray Chatbot",
+  "main": "index.js",
+  "scripts": {
+    "frontend": "(cd frontend/ && npm run dev)"
+  },
+  "author": "",
+  "license": "ISC"
+}
