@@ -3,7 +3,7 @@ import Link from 'next/link';
 import React from 'react';
 
 const BUTTON_VARIANT = {
-  primary: 'bg-black text-white text-center font-semibold px-4 py-2 hover:bg-slate-700 min-w-28'
+  primary: 'bg-black text-white text-center font-semibold px-4 py-2 hover:bg-slate-700 flex justify-between items-center rounded-md',
 };
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -20,8 +20,8 @@ export default function Button(props: ButtonProps) {
   }
   return (
     <ELEMENT
-      className={`${BUTTON_VARIANT[variant]}`}
-      {... (props.href ? { href: props.href! } : {})}
+    {...props}
+    className={`${BUTTON_VARIANT[variant]} ${props?.className}`}
     >
       {props?.children}
     </ELEMENT>

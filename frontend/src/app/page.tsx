@@ -1,11 +1,7 @@
+"use client"
 import Button from "@/components/Button";
 import Image from "next/image";
 import { ChatbotTabsEnum } from "@/utils/enums";
-
-type ChatbotType = {
-  chatbot_id: string;
-  name: string;
-};
 
 export default function Home() {
   const ChatBots: ChatbotType[] = [

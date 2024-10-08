@@ -15,7 +15,7 @@ export default function RootLayout({
       <body className={`h-screen`}>
         <Header />
         <Wrapper className="h-[calc(100vh-80px)] overflow-auto">
-          <Container>{children}</Container>
+          <Container className="h-full">{children}</Container>
         </Wrapper>
         <ChatBubble />
       </body>
