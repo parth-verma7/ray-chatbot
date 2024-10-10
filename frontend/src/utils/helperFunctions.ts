@@ -28,3 +28,12 @@ export function formatTime(
   };
   return date.toLocaleTimeString(undefined, options);
 }
+
+export const isValidUrl = (urlString: string) => {
+  try {
+    return Boolean(new URL(urlString));
+  } catch (e:any) {
+    console.log(e);
+    return false;
+  }
+};

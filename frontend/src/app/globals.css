@@ -27,4 +27,7 @@ body {
   .text-h4 {
     @apply text-3xl font-bold
   }
+  .text-h3 {
+    @apply text-2xl font-semibold leading-none tracking-tight
+  }
 }
