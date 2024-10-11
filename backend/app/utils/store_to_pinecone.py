@@ -5,8 +5,8 @@ from pinecone import ServerlessSpec
 
 load_dotenv()
 
-def store_to_pinecone(vectorstore: list, index_name: str, namespace_name: str) -> str:
-    try:        
+def store_to_pinecone(vectorstore: list, index_name: str, namespace_name: str) -> bool:
+    try:
         pinecone_api_key=os.getenv('PINECONE_API_KEY')
         pc = Pinecone(api_key=pinecone_api_key)
 

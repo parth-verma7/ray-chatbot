@@ -1,8 +1,8 @@
 import torch
-from transformers import AutoTokenizer, AutoModel    
-from pinecone import Pinecone
 import os
+from pinecone import Pinecone
 from dotenv import load_dotenv
+from transformers import AutoTokenizer, AutoModel    
 load_dotenv()
 
 def query_pinecone(tokenizer: AutoTokenizer, model: 

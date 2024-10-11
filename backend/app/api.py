@@ -6,10 +6,10 @@ app = FastAPI()
 
 @app.post("/upload_sources")
 async def upload_sources(
-    file: UploadFile = File(...),
+    file: Union[UploadFile, str] = File(...),
     text: str = Form(...),
-    qNa: dict = Form(...),
-    links: list = Form(...),
+    qNa: str = Form(...),
+    links: str = Form(...),
 ):
     if qNa: qNa=json.loads(qNa)
     if links: links=json.loads(links)
@@ -25,20 +25,14 @@ async def upload_sources(
             '''
             print("Pdf file is uploaded")
 
-    if file.content_type == "application/pdf":
-        pdf_contents = await file.read()
-        '''
-            Since we are sending the pdf file in form of Bytes from frontend, 
-            therefore we need to send convert it into BytesIO format which PdfReader accepts!!
-        '''
+    else: 
+        print("Not uploaded pdf file")
 
     if not len(text): text=None
     if not len(qNa): qNa=None
     if not len(links): links=None
-
     # return "success"
     status_stored=server.store_data(pdf_contents, text, qNa, links)
-
     return {"text": status_stored}
     
 
@@ -62,4 +56,3 @@ async def query(
     '''
     llm_response = server.query_results(user_query, sources)
     return {"text": f"{llm_response}"}
-    
