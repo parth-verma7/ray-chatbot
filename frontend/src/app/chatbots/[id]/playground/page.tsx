@@ -1,16 +1,18 @@
-"use client"
+"use client";
 import Chats from "@/components/Chats";
 import axios from "axios";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 
 export default function Page() {
-  const [messages, setMessages] = useState<Message[]>([{
-    id: 1,
-    sender: "bot",
-    text: "Hello! How can I help you today?",
-    timestamp: 1728388646584,
-  }]);
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: 1,
+      sender: "bot",
+      text: "Hello! How can I help you today?",
+      timestamp: 1728388646584,
+    },
+  ]);
   const handleSendMessage = async (message: string) => {
     const toastId = toast.loading("Sending message...");
     try {
@@ -23,13 +25,29 @@ export default function Page() {
           timestamp: Date.now(),
         },
       ]);
-      const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/query`);
+      const formData = new FormData();
+      formData.append("user_query", message);
+      formData.append(
+        "sources",
+        localStorage.getItem("sourceData") ||
+          '{\n "pdf":false, \n "text":true, \n "qna": true, \n "links":true\n}'
+      );
+
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/query`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       setMessages((prev) => [
         ...prev,
         {
           id: Date.now(),
           sender: "bot",
-          text: JSON.stringify(res),
+          text: JSON.stringify(res.data.text),
           timestamp: Date.now(),
         },
       ]);
@@ -39,8 +57,7 @@ export default function Page() {
         isLoading: false,
         autoClose: 400,
       });
-    }
-    catch(e:any){
+    } catch (e: any) {
       toast.update(toastId, {
         render: JSON.stringify(e),
         type: "error",
@@ -48,7 +65,7 @@ export default function Page() {
         autoClose: 400,
       });
     }
-  }
+  };
   return (
     <div
       className="w-full max-w-5xl mx-auto border border-gray-200 rounded-lg p-10 flex flex-col items-center justify-center md:h-full h-full max-h-[80%]"
@@ -60,7 +77,11 @@ export default function Page() {
       }}
     >
       <main className="group relative flex h-full flex-col bg-white rounded-md overflow-hidden flex-1 basis-full overflow-y-hidden scroll-smooth shadow-inner max-w-lg w-full">
-          <Chats messages={messages} chatName={`Ray's Chat Bot`} handleSendMessage={handleSendMessage} />
+        <Chats
+          messages={messages}
+          chatName={`Ray's Chat Bot`}
+          handleSendMessage={handleSendMessage}
+        />
       </main>
     </div>
   );

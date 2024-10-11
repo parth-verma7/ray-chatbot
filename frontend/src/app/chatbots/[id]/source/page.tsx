@@ -5,6 +5,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import { FaComments, FaFilePdf, FaGlobe, FaTrash } from "react-icons/fa";
 import { FaArrowUpFromBracket, FaLeaf } from "react-icons/fa6";
+import { toast } from "react-toastify";
 
 type SourceDataType = {
   files: File[] | null;
@@ -60,15 +61,29 @@ export default function Page() {
     
     AddToLocalStorage(data);
 
+    const toastId = toast.loading("Uploading sources...");
+
     axios.post(uploadURL, formdata, {
       headers: {
         'Content-Type': 'multipart/form-data',
       }
     }).then((res) => {
-      console.log(res.data);
+      console.log(res.data.text);
+      localStorage.setItem('sourceData', JSON.stringify(res.data.text));
+      toast.update(toastId, {
+        render: "Sources uploaded successfully!",
+        type: "success",
+        isLoading: false,
+        autoClose: 400,})
 
     }).catch((err)=>{
       console.error(err);
+      toast.update(toastId, {
+        render: JSON.stringify(err),
+        type: "error",
+        isLoading: false,
+        autoClose: 400,
+      });
     })
   }
 
