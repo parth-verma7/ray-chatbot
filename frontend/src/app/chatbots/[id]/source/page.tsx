@@ -68,7 +68,6 @@ export default function Page() {
         'Content-Type': 'multipart/form-data',
       }
     }).then((res) => {
-      console.log(res.data.text);
       localStorage.setItem('sourceData', JSON.stringify(res.data.text));
       toast.update(toastId, {
         render: "Sources uploaded successfully!",
@@ -79,7 +78,7 @@ export default function Page() {
     }).catch((err)=>{
       console.error(err);
       toast.update(toastId, {
-        render: JSON.stringify(err),
+        render: err.message,
         type: "error",
         isLoading: false,
         autoClose: 400,

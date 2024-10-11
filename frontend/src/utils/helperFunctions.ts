@@ -33,7 +33,7 @@ export const isValidUrl = (urlString: string) => {
   try {
     return Boolean(new URL(urlString));
   } catch (e:any) {
-    console.log(e);
+    console.error(e);
     return false;
   }
 };

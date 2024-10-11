@@ -4,6 +4,8 @@ import "./globals.css";
 import ChatBubble from "@/components/ChatBubble";
 import Wrapper from "@/components/Wrapper";
 import Container from "@/components/Container";
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from "react-toastify";
 
 export default function RootLayout({
   children,
@@ -18,6 +20,7 @@ export default function RootLayout({
           <Container className="h-full">{children}</Container>
         </Wrapper>
         <ChatBubble />
+        <ToastContainer />
       </body>
     </html>
   );
