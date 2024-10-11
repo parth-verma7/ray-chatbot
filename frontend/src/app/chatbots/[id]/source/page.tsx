@@ -45,7 +45,7 @@ export default function Page() {
     localStorage.setItem("sourceData", JSON.stringify(data));
   }
   const handleSourceSubmit = () => {
-    const url = `${process.env.BACKEND_URL}/upload_sources`;
+    const uploadURL = `${process.env.BACKEND_URL}/upload_sources`;
     const formdata = new FormData();
     if (data.files && data.files.length > 0) {
       for (let i = 0; i < data.files?.length; i++) {
@@ -56,11 +56,11 @@ export default function Page() {
     if (data.QAndAs && data.QAndAs.length > 0)
       formdata.append("qNa", JSON.stringify(data.QAndAs));
     if (data.websites && data.websites.length > 0)
-      formdata.append("links", '["https://fastapi.tiangolo.com/about/"]');
+      formdata.append("links", JSON.stringify(data.websites));
     
     AddToLocalStorage(data);
 
-    axios.post(url, formdata, {
+    axios.post(uploadURL, formdata, {
       headers: {
         'Content-Type': 'multipart/form-data',
       }
