@@ -13,7 +13,7 @@ export default function Chats({
 }) {
   const [message, setMessage] = useState("");
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full ScrollbarStyling">
       {chatName && (
         <header
           className="relative flex items-center justify-start px-5 text-black h-16 gap-px"
@@ -26,7 +26,8 @@ export default function Chats({
         </header>
       )}
 
-      <div className="flex w-full flex-col justify-between overflow-y-auto overflow-x-hidden border-zinc-200 p-2 py-5 gap-4 flex-1 min-h-0">
+      <div className="w-full h-fit overflow-y-auto overflow-x-hidden border-zinc-200 p-2 py-5 flex-1 min-h-0">
+        <div className="h-fit w-full flex flex-col gap-4">
         {messages.map((message) => (
           <p
             key={message.id}
@@ -39,6 +40,7 @@ export default function Chats({
             {message.text}
           </p>
         ))}
+        </div>
       </div>
       {handleSendMessage && (
         <div className="flex justify-end h-[65px] items-end border-zinc-200 border-t">
@@ -49,7 +51,7 @@ export default function Chats({
             onChange={(e) => setMessage(e.target.value)}
             placeholder="Ingresa tus consultas aquí..."
             onKeyDown={(e) => {
-              if (e.keyCode == 13 && e.shiftKey) {
+              if (e.keyCode == 13 && !e.shiftKey) {
                 e.preventDefault();
                 handleSendMessage(message).then(() => {
                   setMessage("");

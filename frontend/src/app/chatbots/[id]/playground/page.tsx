@@ -12,52 +12,10 @@ export default function page() {
     name: "Ray's Chat Bot",
     chats: [
       {
-        id: 2,
-        text: "hi",
-        timestamp: 0,
-        sender: "user",
-      },
-      {
-        id: 3,
-        text: "¡Hola! ¿Cómo puedo ayudarte hoy?",
-        timestamp: 0,
+        id: 1,
         sender: "bot",
-      },
-      {
-        id: 4,
-        text: "What's the weather like today?",
-        timestamp: 0,
-        sender: "user",
-      },
-      {
-        id: 5,
-        text: "The weather is sunny with a high of 25°C.",
-        timestamp: 0,
-        sender: "bot",
-      },
-      {
-        id: 6,
-        text: "Can you tell me a joke?",
-        timestamp: 0,
-        sender: "user",
-      },
-      {
-        id: 7,
-        text: "Why don't scientists trust atoms? Because they make up everything!",
-        timestamp: 0,
-        sender: "bot",
-      },
-      {
-        id: 8,
-        text: "Thank you!",
-        timestamp: 0,
-        sender: "user",
-      },
-      {
-        id: 9,
-        text: "You're welcome! How else can I assist you?",
-        timestamp: 0,
-        sender: "bot",
+        text: "Hello! How can I help you today?",
+        timestamp: 1728388646584,
       },
     ],
   };
@@ -84,7 +42,7 @@ export default function page() {
         backgroundSize: "10px 10px",
       }}
     >
-      <main className="group relative flex h-full flex-col bg-white rounded-md overflow-hidden flex-1 basis-full overflow-y-hidden scroll-smooth shadow-inner">
+      <main className="group relative flex h-full flex-col bg-white rounded-md overflow-hidden flex-1 basis-full overflow-y-hidden scroll-smooth shadow-inner max-w-lg w-full">
           <Chats messages={Bot.chats} chatName={Bot.name} handleSendMessage={handleSendMessage} />
       </main>
     </div>

@@ -127,7 +127,7 @@ export default function Page() {
         {tabs.map((tab) => (
           <div
             key={tab.name}
-            className={`${selectedTab == tab.name ? "max-h-[70%] overflow-auto" : "hidden"}`}
+            className={`${selectedTab == tab.name ? "max-h-[70%] overflow-auto ScrollbarStyling" : "hidden"}`}
           >
             {tab.content}
           </div>

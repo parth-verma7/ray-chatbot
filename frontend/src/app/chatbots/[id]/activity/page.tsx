@@ -107,7 +107,7 @@ export default function Page() {
         Chat Logs
       </h3>
       <div className="flex w-full flex-col space-y-4 lg:flex-row lg:space-y-0 !px-0 h-full flex-1 min-h-0">
-        <div className="w-full lg:max-w-xs xl:max-w-sm lg:border-b-0 border-b overflow-y-auto overflow-x-hidden border-r">
+        <div className="w-full lg:max-w-xs xl:max-w-sm lg:border-b-0 border-b overflow-y-auto ScrollbarStyling overflow-x-hidden border-r">
           <ul className="w-full divide-y divide-zinc-200 h-full">
             {chats.map((chat) => (
               <li
@@ -134,7 +134,7 @@ export default function Page() {
             ))}
           </ul>
         </div>
-        <div className="flex grow justify-center w-full mx-2 relative">
+        <div className="flex grow justify-center w-full ml-2 relative">
           <Chats messages={messages} />
         </div>
       </div>

@@ -31,3 +31,15 @@ body {
     @apply text-2xl font-semibold leading-none tracking-tight
   }
 }
+
+.ScrollbarStyling ::-webkit-scrollbar {
+  @apply w-2;
+}
+
+.ScrollbarStyling ::-webkit-scrollbar-track {
+  @apply bg-transparent rounded-md;
+}
+
+.ScrollbarStyling ::-webkit-scrollbar-thumb {
+  @apply bg-gray-600 rounded-md;
+}

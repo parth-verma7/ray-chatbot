@@ -41,7 +41,7 @@ export default function Tabs() {
   }
   if (tabs.length == 0) return <></>;
   return (
-    <div className="no-scrollbar flex flex-row items-center justify-start gap-7 overflow-auto overflow-y-hidden whitespace-nowrap border-b font-medium lg:justify-center md:pt-0">
+    <div className="no-scrollbar flex flex-row items-center justify-start gap-7 overflow-auto ScrollbarStyling overflow-y-hidden whitespace-nowrap border-b font-medium lg:justify-center md:pt-0">
       {tabs.map((tab, ind) => (
         <Link
           key={ind}

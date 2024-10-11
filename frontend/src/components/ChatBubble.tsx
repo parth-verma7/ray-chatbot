@@ -4,88 +4,31 @@ import Chats from "./Chats";
 export default function ChatBubble() {
   const [isOpen, setIsOpen] = useState(false);
   const modalContainerRef = useRef<HTMLDivElement>(null);
-  useEffect(()=>{
+  useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (modalContainerRef.current && !modalContainerRef.current.contains(event.target as Node)) {
+      if (
+        modalContainerRef.current &&
+        !modalContainerRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
-    }
-  },[isOpen])
-  const Bot:{
+    };
+  }, [isOpen]);
+  const Bot: {
     name: string;
-    chats: Message[]
+    chats: Message[];
   } = {
     name: "Ray's Chat Bot",
     chats: [
       {
-        id: 2,
-        text: "hi",
-        timestamp: 0,
-        sender: "user",
-      },
-      {
-        id: 3,
-        text: "¡Hola! ¿Cómo puedo ayudarte hoy?",
-        timestamp: 0,
+        id: 1,
         sender: "bot",
-      },
-      {
-        id: 4,
-        text: "What's the weather like today?",
-        timestamp: 0,
-        sender: "user",
-      },
-      {
-        id: 5,
-        text: "The weather is sunny with a high of 25°C.",
-        timestamp: 0,
-        sender: "bot",
-      },
-      {
-        id: 6,
-        text: "Can you tell me a joke?",
-        timestamp: 0,
-        sender: "user",
-      },
-      {
-        id: 7,
-        text: "Why don't scientists trust atoms? Because they make up everything!",
-        timestamp: 0,
-        sender: "bot",
-      },
-      {
-        id: 8,
-        text: "Thank you!",
-        timestamp: 0,
-        sender: "user",
-      },
-      {
-        id: 9,
-        text: "You're welcome! How else can I assist you?",
-        timestamp: 0,
-        sender: "bot",
-      },
-      {
-        id: 10,
-        text: "You're welcome! How else can I assist you?",
-        timestamp: 0,
-        sender: "bot",
-      },
-      {
-        id: 11,
-        text: "You're welcome! How else can I assist you?",
-        timestamp: 0,
-        sender: "bot",
-      },
-      {
-        id: 12,
-        text: "You're welcome! How else can I assist you?",
-        timestamp: 0,
-        sender: "bot",
+        text: "Hello! How can I help you today?",
+        timestamp: 1728388646584,
       },
     ],
   };
@@ -102,7 +45,7 @@ export default function ChatBubble() {
         resolve("Done");
       }, 1000);
     });
-  }
+  };
   return (
     <div ref={modalContainerRef}>
       <button
@@ -147,7 +90,11 @@ export default function ChatBubble() {
       </button>
       {isOpen && (
         <div className="ray-chat-bubble fixed flex flex-col justify-between shadow-[0px_10px_30px_0px_rgba(150,150,150,0.2),_0px_0px_0px_1px_rgba(150,150,150,0.2)] bottom-20 right-4 w-[448px] h-[80%] max-h-[80%] rounded-lg z-99 overflow-hidden bg-white">
-          <Chats messages={Bot.chats} chatName={Bot.name} handleSendMessage={handleSendMessage} />
+          <Chats
+            messages={Bot.chats}
+            chatName={Bot.name}
+            handleSendMessage={handleSendMessage}
+          />
         </div>
       )}
     </div>
