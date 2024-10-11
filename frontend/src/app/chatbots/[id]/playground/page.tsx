@@ -47,7 +47,7 @@ export default function Page() {
         {
           id: Date.now(),
           sender: "bot",
-          text: JSON.stringify(res.data.text),
+          text: res.data.text,
           timestamp: Date.now(),
         },
       ]);
@@ -59,7 +59,7 @@ export default function Page() {
       });
     } catch (e: any) {
       toast.update(toastId, {
-        render: JSON.stringify(e),
+        render: e.message,
         type: "error",
         isLoading: false,
         autoClose: 400,
