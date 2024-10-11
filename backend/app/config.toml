@@ -7,7 +7,7 @@ CHUNK_OVERLAP = 20
 
 [pinecone]
 index="ray-chatbot"
-top_k=3
+top_k=2
 pdf_namespace="pdf"
 text_namespace="text"
 link_namespace="link"

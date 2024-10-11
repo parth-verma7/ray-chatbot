@@ -56,9 +56,13 @@ def store_data(pdf_contents: str, text: str, qNa: dict, links: list):
     # return store_to_pinecone.delete_namespace_vectors(config['pinecone']['index'])
 
 
-def query_results(query, namespace):
+def query_results(query:str, sources:dict) -> str:
+    valid_namespaces=[]
+    for key, value in sources.items():
+        if value: valid_namespaces.append(key)
+        else: print("ye nhi tha sources mein:", key)
 
-    pinecone_results=query_to_pinecone.query_pinecone(tokenizer, model, query, index, namespace, top_k)
+    pinecone_results=query_to_pinecone.query_pinecone(tokenizer, model, query, index, valid_namespaces, top_k)
     llm_response=openai_response.openai_response(query, pinecone_results)
 
     return llm_response

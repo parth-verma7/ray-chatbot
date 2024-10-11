@@ -6,8 +6,8 @@ from transformers import AutoTokenizer, AutoModel
 load_dotenv()
 
 def query_pinecone(tokenizer: AutoTokenizer, model: 
-                AutoModel, query: str, index_name:str, namespace_name: str, 
-            top_k: int):
+                    AutoModel, query: str, index_name:str, valid_namespaces: list, 
+                top_k: int):
     
     input_ids = tokenizer(query, return_tensors="pt")["input_ids"]
     with torch.no_grad():
@@ -19,14 +19,17 @@ def query_pinecone(tokenizer: AutoTokenizer, model:
     pc = Pinecone(api_key=pinecone_api_key)
     index=pc.Index(index_name)
 
-    res=index.query(
-        vector=query_embeddings, 
-        top_k=top_k, 
-        namespace=namespace_name
-    )
+    answer=[]
+    for namespace_name in valid_namespaces:
+        res=index.query(
+            vector=query_embeddings, 
+            top_k=top_k, 
+            namespace=namespace_name
+        )
 
-    final=[]
-    for i in res["matches"]:
-        final.append(i["id"])
+        final=[]
+        for i in res["matches"]:
+            final.append(i["id"])
+        answer.append(final)
     
-    return str(final)
+    return str(answer)

@@ -21,8 +21,10 @@ def create_vector_store(total_text:list, tokenizer: AutoTokenizer ,model: AutoMo
 
 def create_vector_store_qna(data: dict, tokenizer: AutoTokenizer, model: AutoModel):
     vectorstore=[]
-    for i, (ques, ans) in enumerate(data.items()):
-        res={}
+    for i, entry in enumerate(data):
+        res = {}
+        ques = entry['question']
+        ans = entry['answer']
         a=f"{ques} : {ans}"
         ascii_vector_id = a.encode('ascii', 'ignore').decode('ascii')
         res["id"]=ascii_vector_id
