@@ -39,8 +39,12 @@ def store_data(pdf_contents: str, text: str, qNa: dict, links: list):
     pinecone_qna_operations(qNa, config['pinecone']['qNa_namespace'])
 
     # for links
-    scraped_data=site_scraper.scrape_sites(links)
-    pinecone_operations(scraped_data, config['pinecone']['link_namespace'])
+    if links:
+        scraped_data=site_scraper.scrape_sites(links)
+        split_text=text_splitter.extract_text_from_string(scraped_data  , chunk_size, chunk_overlap)
+        links_status=pinecone_operations(split_text, config['pinecone']['link_namespace'])
+
+    return f"PDF Status: {pdf_status}, Text Status: {txt_status}, QnA Status: {qna_status}, Links Status: {links_status}"
 
 
 def query_results(query, namespace):

@@ -11,6 +11,10 @@ async def upload_sources(
     qNa: dict = Form(...),
     links: list = Form(...),
 ):
+    import json
+    if qNa: qNa=json.loads(qNa)
+    if links: links=json.loads(links)
+    else: links = []
 
     pdf_contents=None
 
@@ -21,6 +25,11 @@ async def upload_sources(
             therefore we need to send convert it into BytesIO format which PdfReader accepts!!
         '''
 
+    if not len(text): text=None
+    if not len(qNa): qNa=None
+    if not len(links): links=None
+
+    # return "success"
     status_stored=server.store_data(pdf_contents, text, qNa, links)
 
     return {"text": status_stored}

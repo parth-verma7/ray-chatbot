@@ -10,12 +10,17 @@ def store_to_pinecone(vectorstore: list, index_name: str, namespace_name: str) -
         pinecone_api_key=os.getenv('PINECONE_API_KEY')
         pc = Pinecone(api_key=pinecone_api_key)
 
-        existing_indexes=pc.list_indexes()
-        if index_name not in existing_indexes:
+        list_indexes=[]
+        index_description=pc.list_indexes()
+        for desc in index_description:
+            list_indexes.append(desc['name'])
+        print("Existing indexes: ", list_indexes)
+
+        if index_name not in list_indexes:
         
             pc.create_index(
                 name=index_name, 
-                dimension=384, 
+                dimension=384,
                 metric="cosine", 
                 spec=ServerlessSpec(cloud="aws",region="us-east-1")
             )
@@ -27,14 +32,16 @@ def store_to_pinecone(vectorstore: list, index_name: str, namespace_name: str) -
 
         if namespace_name in namespaces:
             index.delete(delete_all=True, namespace=namespace_name)
+        namespaces=list(data["namespaces"].keys())
 
         index.upsert(
             vectors=vectorstore,
             namespace=namespace_name
         )
-        
-        return "success"
+        namespaces=list(data["namespaces"].keys())
+
+        return True
     
     except Exception as e:
-        print(e)
-        return "failed"
+        print("issue is: ", e)
+        return False
