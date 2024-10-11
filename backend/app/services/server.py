@@ -48,9 +48,9 @@ def store_data(pdf_contents: str, text: str, qNa: dict, links: list):
 
     # for links
     if links:
-        print("links found")
         scraped_data=site_scraper.scrape_sites(links)
-        links_status=pinecone_operations(scraped_data, config['pinecone']['link_namespace'])
+        split_text=text_splitter.extract_text_from_string(scraped_data  , chunk_size, chunk_overlap)
+        links_status=pinecone_operations(split_text, config['pinecone']['link_namespace'])
 
     return f"PDF Status: {pdf_status}, Text Status: {txt_status}, QnA Status: {qna_status}, Links Status: {links_status}"
 

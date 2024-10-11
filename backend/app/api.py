@@ -14,6 +14,7 @@ async def upload_sources(
     import json
     if qNa: qNa=json.loads(qNa)
     if links: links=json.loads(links)
+    else: links = []
 
     pdf_contents=None
     if file.size>0:
@@ -31,7 +32,7 @@ async def upload_sources(
 
     if not len(text): text=None
     if not len(qNa): qNa=None
-    if links==['']: links=None
+    if not len(links): links=None
 
     # return "success"
     status_stored=server.store_data(pdf_contents, text, qNa, links)
