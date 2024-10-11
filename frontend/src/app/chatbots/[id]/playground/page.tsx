@@ -1,37 +1,71 @@
-"use client"
+"use client";
 import Chats from "@/components/Chats";
-import React from "react";
+import axios from "axios";
+import React, { useState } from "react";
+import { toast } from "react-toastify";
 
-type BotType = {
-  name: string;
-  chats: Message[];
-};
-
-export default function page() {
-  const Bot: BotType = {
-    name: "Ray's Chat Bot",
-    chats: [
-      {
-        id: 1,
-        sender: "bot",
-        text: "Hello! How can I help you today?",
-        timestamp: 1728388646584,
-      },
-    ],
-  };
-  const handleSendMessage = (message: string) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        Bot.chats.push({
-          id: Bot.chats.length + 1,
+export default function Page() {
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: 1,
+      sender: "bot",
+      text: "Hello! How can I help you today?",
+      timestamp: 1728388646584,
+    },
+  ]);
+  const handleSendMessage = async (message: string) => {
+    const toastId = toast.loading("Sending message...");
+    try {
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: Date.now(),
+          sender: "user",
           text: message,
           timestamp: Date.now(),
-          sender: "user",
-        });
-        resolve("Done");
-      }, 1000);
-    });
-  }
+        },
+      ]);
+      const formData = new FormData();
+      formData.append("user_query", message);
+      formData.append(
+        "sources",
+        localStorage.getItem("sourceData") ||
+          '{\n "pdf":false, \n "text":true, \n "qna": true, \n "links":true\n}'
+      );
+
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/query`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: Date.now(),
+          sender: "bot",
+          text: JSON.stringify(res.data.text),
+          timestamp: Date.now(),
+        },
+      ]);
+      toast.update(toastId, {
+        render: "Message sent!",
+        type: "success",
+        isLoading: false,
+        autoClose: 400,
+      });
+    } catch (e: any) {
+      toast.update(toastId, {
+        render: JSON.stringify(e),
+        type: "error",
+        isLoading: false,
+        autoClose: 400,
+      });
+    }
+  };
   return (
     <div
       className="w-full max-w-5xl mx-auto border border-gray-200 rounded-lg p-10 flex flex-col items-center justify-center md:h-full h-full max-h-[80%]"
@@ -43,7 +77,11 @@ export default function page() {
       }}
     >
       <main className="group relative flex h-full flex-col bg-white rounded-md overflow-hidden flex-1 basis-full overflow-y-hidden scroll-smooth shadow-inner max-w-lg w-full">
-          <Chats messages={Bot.chats} chatName={Bot.name} handleSendMessage={handleSendMessage} />
+        <Chats
+          messages={messages}
+          chatName={`Ray's Chat Bot`}
+          handleSendMessage={handleSendMessage}
+        />
       </main>
     </div>
   );

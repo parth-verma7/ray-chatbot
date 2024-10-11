@@ -5,6 +5,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import { FaComments, FaFilePdf, FaGlobe, FaTrash } from "react-icons/fa";
 import { FaArrowUpFromBracket, FaLeaf } from "react-icons/fa6";
+import { toast } from "react-toastify";
 
 type SourceDataType = {
   files: File[] | null;
@@ -45,7 +46,7 @@ export default function Page() {
     localStorage.setItem("sourceData", JSON.stringify(data));
   }
   const handleSourceSubmit = () => {
-    const url = `${process.env.BACKEND_URL}/upload_sources`;
+    const uploadURL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/upload_sources`;
     const formdata = new FormData();
     if (data.files && data.files.length > 0) {
       for (let i = 0; i < data.files?.length; i++) {
@@ -56,19 +57,33 @@ export default function Page() {
     if (data.QAndAs && data.QAndAs.length > 0)
       formdata.append("qNa", JSON.stringify(data.QAndAs));
     if (data.websites && data.websites.length > 0)
-      formdata.append("links", '["https://fastapi.tiangolo.com/about/"]');
+      formdata.append("links", JSON.stringify(data.websites));
     
     AddToLocalStorage(data);
 
-    axios.post(url, formdata, {
+    const toastId = toast.loading("Uploading sources...");
+
+    axios.post(uploadURL, formdata, {
       headers: {
         'Content-Type': 'multipart/form-data',
       }
     }).then((res) => {
-      console.log(res.data);
+      console.log(res.data.text);
+      localStorage.setItem('sourceData', JSON.stringify(res.data.text));
+      toast.update(toastId, {
+        render: "Sources uploaded successfully!",
+        type: "success",
+        isLoading: false,
+        autoClose: 400,})
 
     }).catch((err)=>{
       console.error(err);
+      toast.update(toastId, {
+        render: JSON.stringify(err),
+        type: "error",
+        isLoading: false,
+        autoClose: 400,
+      });
     })
   }
 
