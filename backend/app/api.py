@@ -1,7 +1,7 @@
 from fastapi import FastAPI, File, UploadFile, Form
-from pydantic import BaseModel
 from services import server
 from typing import Union
+import json
 app = FastAPI()
 
 @app.post("/upload_sources")
@@ -11,14 +11,12 @@ async def upload_sources(
     qNa: str = Form(...),
     links: str = Form(...),
 ):
-    import json
     if qNa: qNa=json.loads(qNa)
     if links: links=json.loads(links)
     else: links = []
 
     pdf_contents=None
     if file.size>0:
-        print("file size is: ", file.size)
         if file.content_type == "application/pdf":
             pdf_contents = await file.read()
             '''
@@ -38,13 +36,25 @@ async def upload_sources(
     status_stored=server.store_data(pdf_contents, text, qNa, links)
     return {"text": status_stored}
     
-    
-class QueryRequest(BaseModel):
-    query: str
 
 @app.post("/query")
-async def query(request: QueryRequest):
-    query=request.query
-    llm_response = server.query_results(query)
+async def query(
+    user_query: str = Form(...),
+    sources: str = Form(...),    
+):
+    sources=json.loads(sources)
+    '''
+    sources will look like:
+
+    `
+    {
+        "pdf":True/False, 
+        "text":True/False, 
+        "qna": True/False, 
+        "links":True/False
+    }
+    `
+    '''
+    llm_response = server.query_results(user_query, sources)
     return {"text": f"{llm_response}"}
     
