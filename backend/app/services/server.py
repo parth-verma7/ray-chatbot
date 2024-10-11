@@ -44,7 +44,8 @@ def store_data(pdf_contents: str, text: str, qNa: dict, links: list):
         split_text=text_splitter.extract_text_from_string(scraped_data  , chunk_size, chunk_overlap)
         links_status=pinecone_operations(split_text, config['pinecone']['link_namespace'])
 
-    return f"PDF Status: {pdf_status}, Text Status: {txt_status}, QnA Status: {qna_status}, Links Status: {links_status}"
+    return {"pdf": pdf_status, "text": txt_status, "qNa": qna_status, "links": links_status}
+    # return store_to_pinecone.delete_namespace_vectors(config['pinecone']['index'])
 
 
 def query_results(query, namespace):
