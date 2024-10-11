@@ -1,31 +1,33 @@
-"use client"
+"use client";
 import Button from "@/components/Button";
 import Image from "next/image";
 import { ChatbotTabsEnum } from "@/utils/enums";
+import { useEffect, useState } from "react";
 
 export default function Home() {
-  const ChatBots: ChatbotType[] = [
-    {
-      chatbot_id: "13814",
-      name: "my bot 1",
-    },
-    {
-      chatbot_id: "13815",
-      name: "my bot 2",
-    },
-    {
-      chatbot_id: "13816",
-      name: "my bot 3",
-    },
-    {
-      chatbot_id: "13817",
-      name: "my bot 4",
-    },
-    {
-      chatbot_id: "13818",
-      name: "my bot 5",
-    },
-  ];
+  const [ChatBots, setChatBots] = useState<ChatbotType[]>([
+    { name: "Bot 1", chatbot_id: "-1" },
+  ]);
+  const [newName, setNewName] = useState("");
+
+  // useEffect(() => {
+  //   if (typeof window != "undefined") {
+  //     return JSON.parse(localStorage.getItem("chatBots") ?? "[]");
+  //   }
+  // }, []);
+
+  useEffect(() => {
+    if (typeof window != "undefined") {
+      if (ChatBots.length == 1 && ChatBots[0].chatbot_id == "-1") {
+        let chatBots = JSON.parse(localStorage.getItem("chatBots") ?? "[]");
+        chatBots = chatBots.filter((chat: any) => chat.chatbot_id != "-1");
+        setChatBots(chatBots);
+      } else {
+        localStorage.setItem("chatBots", JSON.stringify(ChatBots));
+      }
+    }
+  }, [ChatBots]);
+
   return (
     <div>
       <div className="mx-auto max-w-5xl px-4">
@@ -33,36 +35,35 @@ export default function Home() {
           <div>
             <p className="text-h4">Chatbots</p>
           </div>
-          <form action="#" className="flex gap-1 items-center">
+          <div className="flex gap-1 items-center">
             <input
               type="text"
+              value={newName}
+              onChange={(e) => setNewName(e.target.value)}
               className="border border-gray-300 px-4 py-2 w-full"
               placeholder="Chatbot name"
             />
-            <Button>Create</Button>
-          </form>
+            <Button
+              onClick={() => {
+                if (newName.length > 0) {
+                  setChatBots([
+                    ...ChatBots,
+                    { name: newName, chatbot_id: `${new Date().getTime()}` },
+                  ]);
+                  setNewName("");
+                }
+              }}
+            >
+              Create
+            </Button>
+          </div>
         </div>
         <div className="my-8 grid w-full grid-cols-2 gap-8 lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3">
-          {ChatBots.map((bot) => (
-            <ChatBotCard key={bot.chatbot_id} {...bot} />
-          ))}
-          <a href="#">
-            <div className="relative flex w-40 flex-col justify-between overflow-hidden rounded border">
-              <Image
-                alt="thumbnail"
-                width={200}
-                height={200}
-                className="h-40 w-40 border-none object-cover"
-                src="https://backend.chatbase.co/storage/v1/object/public/chatbase/chatbot-placeholder.png?width=640&quality=50"
-                style={{ color: "transparent" }}
-              />
-              <div className="flex h-14 items-center justify-center px-1">
-                <h3 className="m-auto overflow-hidden text-center text-xs font-semibold md:text-sm">
-                  my bot 2
-                </h3>
-              </div>
-            </div>
-          </a>
+          {ChatBots.filter((chat: any) => chat.chatbot_id != "-1").map(
+            (bot) => (
+              <ChatBotCard key={bot.chatbot_id} {...bot} />
+            )
+          )}
         </div>
       </div>
     </div>
