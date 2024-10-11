@@ -45,7 +45,7 @@ export default function Page() {
     localStorage.setItem("sourceData", JSON.stringify(data));
   }
   const handleSourceSubmit = () => {
-    const uploadURL = `${process.env.BACKEND_URL}/upload_sources`;
+    const uploadURL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/upload_sources`;
     const formdata = new FormData();
     if (data.files && data.files.length > 0) {
       for (let i = 0; i < data.files?.length; i++) {
