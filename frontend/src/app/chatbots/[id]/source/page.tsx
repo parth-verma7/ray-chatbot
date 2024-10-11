@@ -1,6 +1,7 @@
 "use client";
 import { SourceHandlerEnum } from "@/utils/enums";
 import { isValidUrl } from "@/utils/helperFunctions";
+import axios from "axios";
 import React, { useState } from "react";
 import { FaComments, FaFilePdf, FaGlobe, FaTrash } from "react-icons/fa";
 import { FaArrowUpFromBracket, FaLeaf } from "react-icons/fa6";
@@ -34,6 +35,42 @@ export default function Page() {
       }));
     };
   };
+
+  const AddToLocalStorage = (source: SourceDataType) => {
+    const data: any = {};
+    if(source.files && source.files.length > 0) data["files"] = true;
+    if(source.text && source.text.length > 0) data["text"] = true;
+    if(source.websites && source.websites.length > 0) data["websites"] = true;
+    if(source.QAndAs && source.QAndAs.length > 0) data["QAndAs"] = true;
+    localStorage.setItem("sourceData", JSON.stringify(data));
+  }
+  const handleSourceSubmit = () => {
+    const url = `${process.env.BACKEND_URL}/upload_sources`;
+    const formdata = new FormData();
+    if (data.files && data.files.length > 0) {
+      for (let i = 0; i < data.files?.length; i++) {
+        formdata.append("files", data.files[i]);
+      }
+    }
+    if (data.text) formdata.append("text", data.text);
+    if (data.QAndAs && data.QAndAs.length > 0)
+      formdata.append("qNa", JSON.stringify(data.QAndAs));
+    if (data.websites && data.websites.length > 0)
+      formdata.append("links", '["https://fastapi.tiangolo.com/about/"]');
+    
+    AddToLocalStorage(data);
+
+    axios.post(url, formdata, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      }
+    }).then((res) => {
+      console.log(res.data);
+
+    }).catch((err)=>{
+      console.error(err);
+    })
+  }
 
   const tabs = [
     {
@@ -98,7 +135,7 @@ export default function Page() {
 
         <div className="flex justify-end gap-2 items-center">
           <p className="text-gray-500 text-sm">{`* Submit button submits data all at once`}</p>
-          <button className="text-sm text-white bg-violet-500 rounded px-4 py-1">
+          <button className="text-sm text-white bg-violet-500 rounded px-4 py-1" onClick={handleSourceSubmit}>
             Submit
           </button>
         </div>
