@@ -1,7 +1,7 @@
 from fastapi import FastAPI, File, UploadFile, Form
 from services import server
 from fastapi.middleware.cors import CORSMiddleware
-from typing import List, Optional, Union
+from typing import List, Optional
 import json
 app = FastAPI()
 

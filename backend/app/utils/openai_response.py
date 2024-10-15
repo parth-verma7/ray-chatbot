@@ -16,3 +16,4 @@ def openai_response(query:str, answer) -> str:
     return response.choices[0].message.content
 
 # print(openai_response("What is science in short?"))
+        
