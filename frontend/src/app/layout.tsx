@@ -14,7 +14,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`h-screen`}>
+      <body className={`h-screen !bg-white`}>
         <Header />
         <Wrapper className="h-[calc(100vh-80px)] overflow-auto ScrollbarStyling">
           <Container className="h-full">{children}</Container>
