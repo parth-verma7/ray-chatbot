@@ -1,10 +1,10 @@
 from fastapi import FastAPI, File, UploadFile, Form
-from services import server
+from app.services import server
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional
 import json
-app = FastAPI()
 
+app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -12,6 +12,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.get("/")
+async def start():
+    return "Backend is running!!"
 
 @app.post("/upload_sources")
 async def upload_sources(

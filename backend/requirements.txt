@@ -1,15 +1,13 @@
-torch --index-url https://download.pytorch.org/whl/cpu
 pypdf2
 toml
 langchain
 transformers
-torch
 python-dotenv
 pinecone-client
 google-generativeai
 fastapi[standard]
 openai
-langchain-openai
+langchain-openai    
 playwright
 beautifulsoup4
 langchain_community

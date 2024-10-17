@@ -1,10 +1,10 @@
 import toml
-from utils import text_splitter
-from models import load_model
-from utils import store_to_pinecone, query_to_pinecone
-from utils import vectorstore_embeddings, site_scraper, openai_response
+from app.utils import text_splitter
+from app.models import load_model
+from app.utils import store_to_pinecone, query_to_pinecone
+from app.utils import vectorstore_embeddings, site_scraper, openai_response
 
-config = toml.load('config.toml')
+config = toml.load('app/config.toml')
 index=config['pinecone']['index']
 top_k=config['pinecone']['top_k']
 
