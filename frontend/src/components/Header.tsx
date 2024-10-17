@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 export default function Header() {
   const path = usePathname();
   return (
-    <header className="flex flex-col h-[80px] justify-between">
+    <header className="flex flex-col h-[80px] justify-between bg-white">
       <div className="relative flex flex-row items-center justify-between bg-white px-2 py-2 md:px-6 md:pb-0">
         <Link
           href="https://escuela-ray-bolivar-sosa.com/"

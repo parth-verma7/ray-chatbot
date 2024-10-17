@@ -16,7 +16,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`h-screen !bg-white`}>
         <Header />
-        <Wrapper className="h-[calc(100vh-80px)] overflow-auto ScrollbarStyling">
+        <Wrapper className="h-[calc(100vh-80px)] bg-white overflow-auto ScrollbarStyling">
           <Container className="h-full">{children}</Container>
         </Wrapper>
         <ChatBubble />
