@@ -1,6 +1,6 @@
 import toml
-from app.utils import text_splitter
 from app.models import load_model
+from app.utils import text_splitter, prompts
 from app.utils import store_to_pinecone, query_to_pinecone
 from app.utils import vectorstore_embeddings, site_scraper, openai_response
 
@@ -25,22 +25,25 @@ def pinecone_qna_operations(qNa:dict, namespace: str):
     if(storing_pinecone_status): return True
     else: return False
 
-def store_data(pdf_contents: str, text: str, qNa: dict, links: list):
+def store_data(pdf_contents: str, qNa: dict, links: list):
     # for pdf
     pdf_status=False
     txt_status=False
     links_status=False
     qna_status=False
 
-    print("chk krlo:", pdf_contents, text, qNa, links)
+    print("chk krlo:", pdf_contents, qNa, links)
     if pdf_contents:
         total_text=text_splitter.extract_text_from_pdf(pdf_contents, chunk_size, chunk_overlap)
         pdf_status=pinecone_operations(total_text, config['pinecone']['pdf_namespace'])
 
     # for text
-    if text:
-        texts=text_splitter.extract_text_from_string(text, chunk_size, chunk_overlap)
-        txt_status=pinecone_operations(texts, config['pinecone']['text_namespace'])
+    # if text:
+    #     # store instructions for openai to respond accordingly
+    #     pass
+
+        # texts=text_splitter.extract_text_from_string(text, chunk_size, chunk_overlap)
+        # txt_status=pinecone_operations(texts, config['pinecone']['text_namespace'])
 
     # for qNa
     if qNa:
@@ -52,17 +55,17 @@ def store_data(pdf_contents: str, text: str, qNa: dict, links: list):
         split_text=text_splitter.extract_text_from_string(scraped_data  , chunk_size, chunk_overlap)
         links_status=pinecone_operations(split_text, config['pinecone']['link_namespace'])
 
-    return {"pdf": pdf_status, "text": txt_status, "qNa": qna_status, "links": links_status}
+    return {"pdf": pdf_status, "qNa": qna_status, "links": links_status}
     # return store_to_pinecone.delete_namespace_vectors(config['pinecone']['index'])
 
 
-def query_results(query:str, sources:dict) -> str:
+def query_results(query:str, sources:dict, text: str) -> str:
     valid_namespaces=[]
     for key, value in sources.items():
         if value: valid_namespaces.append(key)
         else: print("ye nhi tha sources mein:", key)
 
     pinecone_results=query_to_pinecone.query_pinecone(tokenizer, model, query, index, valid_namespaces, top_k)
-    llm_response=openai_response.openai_response(query, pinecone_results)
+    llm_response=openai_response.openai_response(query, pinecone_results, text)
 
     return llm_response
