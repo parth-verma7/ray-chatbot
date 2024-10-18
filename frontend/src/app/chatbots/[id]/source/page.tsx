@@ -1,33 +1,17 @@
 "use client";
+import { globalContext } from "@/components/GlobalContext";
 import { SourceHandlerEnum } from "@/utils/enums";
 import { isValidUrl } from "@/utils/helperFunctions";
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { FaComments, FaFilePdf, FaGlobe, FaTrash } from "react-icons/fa";
 import { FaArrowUpFromBracket, FaLeaf } from "react-icons/fa6";
 import { toast } from "react-toastify";
 
-type SourceDataType = {
-  files: File[] | null;
-  text: string | null;
-  websites: string[] | null;
-  QAndAs:
-    | {
-        question: string;
-        answer: string;
-      }[]
-    | null;
-};
-
 export default function Page() {
   const [selectedTab, setSelectedTab] = useState(SourceHandlerEnum.FILES);
-  const [data, setData] = useState<SourceDataType>({
-    files: null,
-    QAndAs: null,
-    text: null,
-    websites: null,
-  });
-
+  const { sourceData: data, setSourceData: setData } =
+    useContext(globalContext);
   const MakeSetValue = (key: keyof SourceDataType) => {
     return (val: any) => {
       setData((prev) => ({
@@ -39,12 +23,12 @@ export default function Page() {
 
   const AddToLocalStorage = (source: SourceDataType) => {
     const data: any = {};
-    if(source.files && source.files.length > 0) data["files"] = true;
-    if(source.text && source.text.length > 0) data["text"] = true;
-    if(source.websites && source.websites.length > 0) data["websites"] = true;
-    if(source.QAndAs && source.QAndAs.length > 0) data["QAndAs"] = true;
+    if (source.files && source.files.length > 0) data["files"] = true;
+    if (source.text && source.text.length > 0) data["text"] = true;
+    if (source.websites && source.websites.length > 0) data["websites"] = true;
+    if (source.QAndAs && source.QAndAs.length > 0) data["QAndAs"] = true;
     localStorage.setItem("sourceData", JSON.stringify(data));
-  }
+  };
   const handleSourceSubmit = () => {
     const uploadURL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/upload_sources`;
     const formdata = new FormData();
@@ -58,33 +42,36 @@ export default function Page() {
       formdata.append("qNa", JSON.stringify(data.QAndAs));
     if (data.websites && data.websites.length > 0)
       formdata.append("links", JSON.stringify(data.websites));
-    
+
     AddToLocalStorage(data);
 
     const toastId = toast.loading("Uploading sources...");
 
-    axios.post(uploadURL, formdata, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      }
-    }).then((res) => {
-      localStorage.setItem('sourceData', JSON.stringify(res.data.text));
-      toast.update(toastId, {
-        render: "Sources uploaded successfully!",
-        type: "success",
-        isLoading: false,
-        autoClose: 400,})
-
-    }).catch((err)=>{
-      console.error(err);
-      toast.update(toastId, {
-        render: err.message,
-        type: "error",
-        isLoading: false,
-        autoClose: 400,
+    axios
+      .post(uploadURL, formdata, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((res) => {
+        localStorage.setItem("sourceData", JSON.stringify(res.data.text));
+        toast.update(toastId, {
+          render: "Sources uploaded successfully!",
+          type: "success",
+          isLoading: false,
+          autoClose: 400,
+        });
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.update(toastId, {
+          render: err.message,
+          type: "error",
+          isLoading: false,
+          autoClose: 400,
+        });
       });
-    })
-  }
+  };
 
   const tabs = [
     {
@@ -141,7 +128,11 @@ export default function Page() {
         {tabs.map((tab) => (
           <div
             key={tab.name}
-            className={`${selectedTab == tab.name ? "max-h-[70%] overflow-auto ScrollbarStyling" : "hidden"}`}
+            className={`${
+              selectedTab == tab.name
+                ? "max-h-[70%] overflow-auto ScrollbarStyling"
+                : "hidden"
+            }`}
           >
             {tab.content}
           </div>
@@ -149,7 +140,10 @@ export default function Page() {
 
         <div className="flex justify-end gap-2 items-center">
           <p className="text-gray-500 text-sm">{`* Submit button submits data all at once`}</p>
-          <button className="text-sm text-white bg-violet-500 rounded px-4 py-1" onClick={handleSourceSubmit}>
+          <button
+            className="text-sm text-white bg-violet-500 rounded px-4 py-1"
+            onClick={handleSourceSubmit}
+          >
             Submit
           </button>
         </div>
@@ -342,7 +336,7 @@ const QandAHandler = ({
               <label className="mb-2 text-sm text-zinc-700">Question</label>
               <button
                 className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-80 text-red-500 hover:bg-red-50 hover:text-red-600 bg-transparent h-9 w-9 mb-1 px-2"
-                onClick={()=>{
+                onClick={() => {
                   setValue(value.filter((_, idx) => ind != idx));
                 }}
               >

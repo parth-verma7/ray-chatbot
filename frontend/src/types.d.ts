@@ -17,3 +17,15 @@ type ChatType = {
   last_message: string;
   timestamp: number;
 };
+
+type SourceDataType = {
+  files: File[] | null;
+  text: string | null;
+  websites: string[] | null;
+  QAndAs:
+    | {
+        question: string;
+        answer: string;
+      }[]
+    | null;
+};
