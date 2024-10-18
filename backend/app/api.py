@@ -51,7 +51,7 @@ async def query(
     user_query: str = Form(...),
     sources: str = Form(...),
     text: str = Form(...),
-        links: Optional[str] = Form(...),
+    links: Optional[str] = Form(...),
     ):
 
     if links: links=json.loads(links)
