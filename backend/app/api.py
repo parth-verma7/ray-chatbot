@@ -50,11 +50,14 @@ async def upload_sources(
 async def query(
     user_query: str = Form(...),
     sources: str = Form(...),
-    text: str = Form(...),    
-):
+    text: str = Form(...),
+        links: Optional[str] = Form(...),
+    ):
+
+    if links: links=json.loads(links)
     print(user_query)
     print(sources)
     sources=json.loads(sources)
     
-    llm_response = server.query_results(user_query, sources, text)
+    llm_response = server.query_results(user_query, sources, text, links)
     return {"text": f"{llm_response}"}
