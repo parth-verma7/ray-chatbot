@@ -42,20 +42,19 @@ async def upload_sources(
     else: 
         print("Not uploaded pdf file")
 
-    status_stored=server.store_data(pdf_contents, text, qNa, links)
+    status_stored=server.store_data(pdf_contents, qNa, links)
     return {"text": status_stored}
     
 
 @app.post("/query")
 async def query(
     user_query: str = Form(...),
-    sources: str = Form(...),    
+    sources: str = Form(...),
+    text: str = Form(...),    
 ):
     print(user_query)
     print(sources)
     sources=json.loads(sources)
-    print(type(sources))
     
-    llm_response = server.query_results(user_query, sources)
+    llm_response = server.query_results(user_query, sources, text)
     return {"text": f"{llm_response}"}
-        
