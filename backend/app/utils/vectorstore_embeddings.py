@@ -21,7 +21,7 @@ def create_vector_store(total_text:list, tokenizer: AutoTokenizer ,model: AutoMo
 
 def create_vector_store_qna(data: dict, tokenizer: AutoTokenizer, model: AutoModel):
     vectorstore=[]
-    for i, entry in enumerate(data):
+    for _, entry in enumerate(data):
         res = {}
         ques = entry['question']
         ans = entry['answer']
