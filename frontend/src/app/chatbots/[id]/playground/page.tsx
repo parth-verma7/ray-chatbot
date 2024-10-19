@@ -1,10 +1,12 @@
 "use client";
 import Chats from "@/components/Chats";
+import { globalContext } from "@/components/GlobalContext";
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { toast } from "react-toastify";
 
 export default function Page() {
+  const { sourceData } = useContext(globalContext);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
@@ -32,6 +34,10 @@ export default function Page() {
         localStorage.getItem("sourceData") ||
           '{\n "pdf":false, \n "text":true, \n "qna": true, \n "links":true\n}'
       );
+      formData.append("text", sourceData.text || "");
+      if(sourceData.websites && sourceData.websites.length > 0) {
+        formData.append("links", JSON.stringify(sourceData.websites));
+      }
 
       const res = await axios.post(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/query`,

@@ -46,6 +46,7 @@ export default function ChatBubble() {
       }, 1000);
     });
   };
+  
   return (
     <div ref={modalContainerRef}>
       <button
