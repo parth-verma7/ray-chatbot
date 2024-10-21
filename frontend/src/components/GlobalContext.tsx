@@ -1,3 +1,4 @@
+import { LOCALSTORAGE_SOURCE_DATA_ALIS } from "@/utils/Constants";
 import { createContext, useEffect, useState } from "react";
 
 interface GlobalContextType {
@@ -9,14 +10,14 @@ export const globalContext = createContext<GlobalContextType>({} as any);
 
 export default function GlobalContextProvider({ children }: { children: any }) {
   const [sourceData, setSourceData] = useState<SourceDataType>(
-    (typeof window !== "undefined" && localStorage.getItem("sourceData"))
-      ? JSON.parse(localStorage.getItem("sourceData")!)
+    (typeof window !== "undefined" && localStorage.getItem(LOCALSTORAGE_SOURCE_DATA_ALIS))
+      ? JSON.parse(localStorage.getItem(LOCALSTORAGE_SOURCE_DATA_ALIS)!)
       : { files: [], text: "", websites: [], QAndAs: [] }
   );
 
   useEffect(()=>{
     if(typeof window !== "undefined"){
-      localStorage.setItem("sourceData", JSON.stringify({...sourceData, files: []}));
+      localStorage.setItem(LOCALSTORAGE_SOURCE_DATA_ALIS, JSON.stringify({...sourceData, files: []}));
     }
   }, [sourceData.QAndAs, sourceData.text, sourceData.websites]) 
 

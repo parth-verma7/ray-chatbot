@@ -1,6 +1,7 @@
 "use client";
 import Chats from "@/components/Chats";
 import { globalContext } from "@/components/GlobalContext";
+import { LOCALSTORAGE_SOURCE_DATA_AVAILABLE_ALIS } from "@/utils/Constants";
 import axios from "axios";
 import React, { useContext, useState } from "react";
 import { toast } from "react-toastify";
@@ -31,7 +32,7 @@ export default function Page() {
       formData.append("user_query", message);
       formData.append(
         "sources",
-        localStorage.getItem("sourceData") ||
+        localStorage.getItem(LOCALSTORAGE_SOURCE_DATA_AVAILABLE_ALIS) ||
           '{\n "pdf":false, \n "text":true, \n "qna": true, \n "links":true\n}'
       );
       formData.append("text", sourceData.text || "");

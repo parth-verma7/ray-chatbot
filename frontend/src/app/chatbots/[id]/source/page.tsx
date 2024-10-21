@@ -1,5 +1,6 @@
 "use client";
 import { globalContext } from "@/components/GlobalContext";
+import { LOCALSTORAGE_SOURCE_DATA_AVAILABLE_ALIS } from "@/utils/Constants";
 import { SourceHandlerEnum } from "@/utils/enums";
 import { isValidUrl } from "@/utils/helperFunctions";
 import axios from "axios";
@@ -27,7 +28,7 @@ export default function Page() {
     if (source.text && source.text.length > 0) data["text"] = true;
     if (source.websites && source.websites.length > 0) data["websites"] = true;
     if (source.QAndAs && source.QAndAs.length > 0) data["QAndAs"] = true;
-    localStorage.setItem("sourceData", JSON.stringify(data));
+    localStorage.setItem(LOCALSTORAGE_SOURCE_DATA_AVAILABLE_ALIS, JSON.stringify(data));
   };
   const handleSourceSubmit = () => {
     const uploadURL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/upload_sources`;
@@ -54,7 +55,7 @@ export default function Page() {
         },
       })
       .then((res) => {
-        localStorage.setItem("sourceData", JSON.stringify(res.data.text));
+        localStorage.setItem(LOCALSTORAGE_SOURCE_DATA_AVAILABLE_ALIS, JSON.stringify(res.data.text));
         toast.update(toastId, {
           render: "Sources uploaded successfully!",
           type: "success",
