@@ -48,10 +48,10 @@ async def upload_sources(
 
 @app.post("/query")
 async def query(
-    user_query: str = Form(...),
-    sources: str = Form(...),
-    text: str = Form(...),
-    links: Optional[str] = Form(...),
+    user_query: str = Form(None),
+    sources: str = Form(None),
+    text: str = Form(None),
+    links: Optional[str] = Form(None),
     ):
 
     if links: links=json.loads(links)
