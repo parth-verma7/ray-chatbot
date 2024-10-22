@@ -12,6 +12,7 @@ export default function Chats({
   handleSendMessage?: (message: string) => Promise<any>;
 }) {
   const [message, setMessage] = useState("");
+  const messagesRef = React.useRef<HTMLDivElement>(null);
   return (
     <div className="flex flex-col h-full ScrollbarStyling">
       {chatName && (
@@ -26,20 +27,20 @@ export default function Chats({
         </header>
       )}
 
-      <div className="w-full h-fit overflow-y-auto overflow-x-hidden border-zinc-200 p-2 py-5 flex-1 min-h-0">
+      <div className="w-full h-fit overflow-y-auto overflow-x-hidden border-zinc-200 p-2 py-5 flex-1 min-h-0 scroll-smooth" ref={messagesRef}>
         <div className="h-fit w-full flex flex-col gap-4">
-        {messages.map((message) => (
-          <p
-            key={message.id}
-            className={`w-fit flex relative hyphens-auto break-words rounded-[20px] px-5 py-4 text-sm antialiased max-w-[min(calc(100%-40px),65ch)] flex-col gap-4 leading-relaxed ${
-              message.sender == "bot"
-                ? "mr-8 self-start rounded-bl text-left bg-[#f1f1f0] text-black"
-                : "ml-8 self-end rounded-br text-left bg-black text-white"
-            }`}
-          >
-            {message.text}
-          </p>
-        ))}
+          {messages.map((message) => (
+            <p
+              key={message.id}
+              className={`w-fit flex relative hyphens-auto break-words rounded-[20px] px-5 py-4 text-sm antialiased max-w-[min(calc(100%-40px),65ch)] flex-col gap-4 leading-relaxed ${
+                message.sender == "bot"
+                  ? "mr-8 self-start rounded-bl text-left bg-[#f1f1f0] text-black"
+                  : "ml-8 self-end rounded-br text-left bg-black text-white"
+              }`}
+            >
+              {message.text}
+            </p>
+          ))}
         </div>
       </div>
       {handleSendMessage && (
@@ -55,6 +56,9 @@ export default function Chats({
                 e.preventDefault();
                 handleSendMessage(message).then(() => {
                   setMessage("");
+                  setTimeout(()=>{
+                    messagesRef.current?.scrollTo({ top: messagesRef.current?.scrollHeight });
+                  },100)
                 });
               }
             }}
@@ -64,6 +68,9 @@ export default function Chats({
             onClick={() => {
               handleSendMessage(message).then(() => {
                 setMessage("");
+                setTimeout(()=>{
+                  messagesRef.current?.scrollTo({ top: messagesRef.current?.scrollHeight });
+                },1000)
               });
             }}
           >

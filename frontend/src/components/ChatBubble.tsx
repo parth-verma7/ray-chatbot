@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Chats from "./Chats";
 
-export default function ChatBubble() {
+export default function ChatBubble({isFullScreen = false}: {isFullScreen?: boolean}) {
   const [isOpen, setIsOpen] = useState(false);
   const modalContainerRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -49,7 +49,7 @@ export default function ChatBubble() {
   
   return (
     <div ref={modalContainerRef}>
-      <button
+      {!isFullScreen && <button
         onClick={() => {
           setIsOpen(!isOpen);
         }}
@@ -88,9 +88,9 @@ export default function ChatBubble() {
             />
           </svg>
         )}
-      </button>
-      {isOpen && (
-        <div className="ray-chat-bubble fixed flex flex-col justify-between shadow-[0px_10px_30px_0px_rgba(150,150,150,0.2),_0px_0px_0px_1px_rgba(150,150,150,0.2)] bottom-20 right-4 w-[448px] h-[80%] max-h-[80%] rounded-lg z-99 overflow-hidden bg-white">
+      </button>}
+      {(isFullScreen || isOpen) && (
+        <div className={`ray-chat-bubble fixed flex flex-col justify-between shadow-[0px_10px_30px_0px_rgba(150,150,150,0.2),_0px_0px_0px_1px_rgba(150,150,150,0.2)] bottom-20 right-4 rounded-lg z-99 overflow-hidden bg-white ${isFullScreen ? "w-screen h-screen top-0 left-0" :"w-[448px] h-[80%] max-h-[80%]"}`}>
           <Chats
             messages={Bot.chats}
             chatName={Bot.name}
