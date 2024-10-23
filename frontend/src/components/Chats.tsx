@@ -2,6 +2,20 @@ import React, { useState } from "react";
 import Button from "./Button";
 import { FaPaperPlane } from "react-icons/fa";
 
+function linkify(text: string) {
+  const urlRegex = /(https?:\/\/[^\s)]+)/g;
+  return text.split(urlRegex).map((part, index) => {
+    if (part.match(urlRegex)) {
+      return (
+        <a className="text-blue-600 underline inline-block" key={index} href={part} target="_blank" rel="noopener noreferrer">
+          {part}
+        </a>
+      );
+    }
+    return part;
+  });
+}
+
 export default function Chats({
   messages,
   chatName,
@@ -32,13 +46,13 @@ export default function Chats({
           {messages.map((message) => (
             <p
               key={message.id}
-              className={`w-fit flex relative hyphens-auto break-words rounded-[20px] px-5 py-4 text-sm antialiased max-w-[min(calc(100%-40px),65ch)] flex-col gap-4 leading-relaxed ${
+              className={`w-fit relative hyphens-auto break-words rounded-[20px] px-5 py-4 text-sm antialiased max-w-[min(calc(100%-40px),65ch)] gap-4 leading-relaxed ${
                 message.sender == "bot"
                   ? "mr-8 self-start rounded-bl text-left bg-[#f1f1f0] text-black"
                   : "ml-8 self-end rounded-br text-left bg-black text-white"
               }`}
             >
-              {message.text}
+              {linkify(message.text)}
             </p>
           ))}
         </div>
