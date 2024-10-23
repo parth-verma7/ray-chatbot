@@ -35,11 +35,10 @@ export default function Page() {
         localStorage.getItem(LOCALSTORAGE_SOURCE_DATA_AVAILABLE_ALIS) ||
           '{\n "pdf":false, \n "text":true, \n "qna": true, \n "links":true\n}'
       );
-      formData.append("text", sourceData.text || "");
-      if(sourceData.websites && sourceData.websites.length > 0) {
+      formData.append("text", sourceData?.text || "");
+      if(sourceData?.websites && sourceData.websites.length > 0) {
         formData.append("links", JSON.stringify(sourceData.websites));
       }
-
       const res = await axios.post(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/query`,
         formData,
