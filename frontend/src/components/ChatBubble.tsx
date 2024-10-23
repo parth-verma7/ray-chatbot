@@ -1,5 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Chats from "./Chats";
+import { globalContext } from "./GlobalContext";
+import { toast } from "react-toastify";
+import { LOCALSTORAGE_SOURCE_DATA_AVAILABLE_ALIS } from "@/utils/Constants";
+import axios from "axios";
 
 export default function ChatBubble({isFullScreen = false}: {isFullScreen?: boolean}) {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,33 +22,73 @@ export default function ChatBubble({isFullScreen = false}: {isFullScreen?: boole
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isOpen]);
-  const Bot: {
-    name: string;
-    chats: Message[];
-  } = {
-    name: "Ray's Chat Bot",
-    chats: [
-      {
-        id: 1,
-        sender: "bot",
-        text: "Hello! How can I help you today?",
-        timestamp: 1728388646584,
-      },
-    ],
-  };
+  
+  const { sourceData } = useContext(globalContext);
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: 1,
+      sender: "bot",
+      text: "Hello! How can I help you today?",
+      timestamp: 1728388646584,
+    },
+  ]);
 
-  const handleSendMessage = (message: string) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        Bot.chats.push({
-          id: Bot.chats.length + 1,
+  const handleSendMessage = async (message: string) => {
+    const toastId = toast.loading("Sending message...");
+    try {
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: Date.now(),
+          sender: "user",
           text: message,
           timestamp: Date.now(),
-          sender: "user",
-        });
-        resolve("Done");
-      }, 1000);
-    });
+        },
+      ]);
+      const formData = new FormData();
+      formData.append("user_query", message);
+      formData.append(
+        "sources",
+        localStorage.getItem(LOCALSTORAGE_SOURCE_DATA_AVAILABLE_ALIS) ||
+          '{\n "pdf":false, \n "text":true, \n "qna": true, \n "links":true\n}'
+      );
+      formData.append("text", sourceData.text || "");
+      if(sourceData.websites && sourceData.websites.length > 0) {
+        formData.append("links", JSON.stringify(sourceData.websites));
+      }
+
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/query`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: Date.now(),
+          sender: "bot",
+          text: res.data.text,
+          timestamp: Date.now(),
+        },
+      ]);
+      toast.update(toastId, {
+        render: "Message sent!",
+        type: "success",
+        isLoading: false,
+        autoClose: 400,
+      });
+    } catch (e: any) {
+      toast.update(toastId, {
+        render: e.message,
+        type: "error",
+        isLoading: false,
+        autoClose: 400,
+      });
+    }
   };
   
   return (
@@ -92,8 +136,8 @@ export default function ChatBubble({isFullScreen = false}: {isFullScreen?: boole
       {(isFullScreen || isOpen) && (
         <div className={`ray-chat-bubble fixed flex flex-col justify-between shadow-[0px_10px_30px_0px_rgba(150,150,150,0.2),_0px_0px_0px_1px_rgba(150,150,150,0.2)] bottom-20 right-4 rounded-lg z-99 overflow-hidden bg-white ${isFullScreen ? "w-screen h-screen top-0 left-0" :"w-[448px] h-[80%] max-h-[80%]"}`}>
           <Chats
-            messages={Bot.chats}
-            chatName={Bot.name}
+            messages={messages}
+            chatName={"Ray's Chat Bot"}
             handleSendMessage={handleSendMessage}
           />
         </div>
